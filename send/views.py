@@ -43,7 +43,8 @@ def Data(request):
                         'AfterDate': request.data["Date"],
                         'CarNum': request.data["CarNum"],
                         'BeforeUniqueNumber': recent_5min.UniqueNumber,
-                        'AfterUniqueNumber': request.data["UniqueNumber"]  
+                        'AfterUniqueNumber': request.data["UniqueNumber"],
+                        # "Beforeimage": request.FILES.getlist('file')[0]
                     }
                     serializer = ReportListSerializers(data=data)
                     if serializer.is_valid():

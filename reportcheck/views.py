@@ -6,7 +6,7 @@ from django.http import JsonResponse
 
 # Create your views here.
 
-@api_view(["GET"])
+@api_view(["POST"])
 def myreport(request):
     if Member.objects.filter(MemberID=request.data["MemberID"]).exists():
         user = Member.objects.get(MemberID=request.data["MemberID"])
@@ -33,7 +33,7 @@ def myreport(request):
 
     return JsonResponse(response_data, safe=False)
 
-@api_view(["GET"])
+@api_view(["POST"])
 def mycar(request):
     if ReportList.objects.filter(CarNum=request.data["CarNum"]).exists():
         report_list = ReportList.objects.filter(CarNum=request.data["CarNum"]).order_by('-AfterDate')
@@ -54,4 +54,14 @@ def mycar(request):
     
     return JsonResponse(response_data, safe=False)
 
-
+@api_view(["POST"])
+def image_views(request):
+    if request.method == 'POST':
+        car_num = request.data['CarNum']
+        report = ReportList.objects.get(CarNum=car_num)
+        context = {
+            'report': report,
+        }
+        return render(request, 'image_views.html', context)
+    else:
+        return JsonResponse({'error': 'Invalid request method'}, status=405)
