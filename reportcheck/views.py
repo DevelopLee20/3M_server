@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from rest_framework.decorators import api_view
 from rest_framework import status
 from user.serializers import Member, CarList, ReportList
@@ -27,7 +27,8 @@ def myreport(request):
             "after_time": report.AfterDate,
             "car_num": report.CarNum,
             "latitude": car.Latitude,
-            "longitude": car.Longitube
+            "longitude": car.Longitube,
+            "Beforeimage": report.Beforeimage.url   # 수정부분
         }
         response_data.append(data)
 
@@ -57,11 +58,13 @@ def mycar(request):
 @api_view(["POST"])
 def image_views(request):
     if request.method == 'POST':
-        car_num = request.data['CarNum']
-        report = ReportList.objects.get(CarNum=car_num)
+        url = f'carimg/{request.data["url"]}'
+        report_list = ReportList.objects.get(Beforeimage=url)
+
         context = {
-            'report': report,
+            'report' : report_list
         }
-        return render(request, 'image_views.html', context)
+
+        return render(request, 'image_views.html', context=context)
     else:
         return JsonResponse({'error': 'Invalid request method'}, status=405)
